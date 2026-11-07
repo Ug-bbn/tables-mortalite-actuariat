@@ -1,69 +1,27 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Accueil</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f6fb;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: #fff;
-            padding: 2rem 3rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-        h1 {
-            color: #2d3a4b;
-            margin-bottom: 1.5rem;
-        }
-        .upload-form {
-            margin-bottom: 1.5rem;
-        }
-        .file-input {
-            margin-bottom: 1rem;
-        }
-        .btn {
-            background: #4f8cff;
-            color: #fff;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 6px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin: 0 0.5rem;
-            transition: background 0.2s;
-        }
-        .btn:hover {
-            background: #2563eb;
-        }
-        .or {
-            margin: 1rem 0;
-            color: #888;
-            font-size: 1rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Bienvenue sur l'application de table de mortalité</h1>
-        <form class="upload-form" action="/upload_demo" method="post" enctype="multipart/form-data">
-            <input class="file-input" type="file" name="file" accept=".xls,.xlsx" required>
-            <button class="btn" type="submit">Uploader une table démographique</button>
-        </form>
-        <div class="or">ou</div>
-        <form class="upload-form" action="/upload_mortalite" method="post" enctype="multipart/form-data">
-            <input class="file-input" type="file" name="file" accept=".xls,.xlsx" required>
-            <button class="btn" type="submit">Uploader une table de mortalité</button>
-        </form>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+{% block contenu %}
+<h1>Tables de mortalité et démographie</h1>
+<p class="desc">Analyse des données de l'Insee : survie et espérance de vie par sexe, calculs actuariels
+(probabilité de survie, rente viagère) vérifiés contre les valeurs publiées, et pyramide des âges.</p>
+
+<div class="carte">
+    <h2 style="margin-top:0">Table de mortalité 2020-2022</h2>
+    <p><a class="btn" href="/mortalite">Voir l'analyse</a></p>
+    <form action="/mortalite" method="post" enctype="multipart/form-data">
+        <label>Ou importer une autre table Insee (même format, .xls ou .xlsx)
+            <input type="file" name="fichier" accept=".xls,.xlsx" required></label>
+        <p><button class="btn" type="submit">Analyser ce fichier</button></p>
+    </form>
+</div>
+
+<div class="carte">
+    <h2 style="margin-top:0">Pyramide des âges au 1er janvier 2025</h2>
+    <p><a class="btn" href="/demographie">Voir la pyramide</a></p>
+    <form action="/demographie" method="post" enctype="multipart/form-data">
+        <label>Ou importer une autre pyramide Insee (même format, .xls ou .xlsx)
+            <input type="file" name="fichier" accept=".xls,.xlsx" required></label>
+        <p><button class="btn" type="submit">Analyser ce fichier</button></p>
+    </form>
+</div>
+<p class="note">Les fichiers importés sont lus en mémoire et ne sont jamais enregistrés sur le serveur.</p>
+{% endblock %}

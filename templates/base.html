@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titre %}Tables de mortalité{% endblock %}</title>
+    <script src="{{ plotly_js }}" charset="utf-8"></script>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fb; color: #1f2937; margin: 0; }
+        nav { background: #2c3e50; padding: 12px 24px; }
+        nav a { color: #fff; text-decoration: none; margin-right: 24px; font-weight: 600; }
+        .container { max-width: 900px; margin: 32px auto; background: #fff; border-radius: 12px;
+                     box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 32px; }
+        h1 { color: #2c3e50; margin-top: 0; }
+        h2 { color: #2c3e50; margin-top: 40px; }
+        .desc, .note { color: #555; }
+        .note { font-size: 0.9em; }
+        table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        th, td { padding: 8px; text-align: right; }
+        th:first-child, td:first-child { text-align: left; }
+        th { background: #2c3e50; color: #fff; font-weight: 600; }
+        tr:nth-child(even) { background: #f0f4f8; }
+        .carte { background: #f8fafc; border-radius: 8px; padding: 20px; margin: 16px 0; }
+        .resultat { font-size: 1.6em; font-weight: 700; color: #2c3e50; }
+        form.calcul { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+        label { display: flex; flex-direction: column; font-size: 0.9em; gap: 4px; }
+        input, select { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1em; }
+        input[type=number] { width: 110px; }
+        .btn { background: #2563eb; color: #fff; border: none; padding: 8px 18px; border-radius: 6px;
+               font-size: 1em; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn:hover { background: #1d4ed8; }
+        .bandeau { background: #fef3c7; border-radius: 6px; padding: 8px 12px; }
+        @media (max-width: 600px) { .container { margin: 0; padding: 16px; border-radius: 0; } th, td { padding: 6px 3px; font-size: 0.9em; } }
+    </style>
+</head>
+<body>
+    <nav><a href="/">Accueil</a><a href="/mortalite">Table de mortalité</a><a href="/demographie">Pyramide des âges</a></nav>
+    <div class="container">{% block contenu %}{% endblock %}</div>
+</body>
+</html>

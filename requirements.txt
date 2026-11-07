@@ -1,0 +1,5 @@
+flask>=3.0
+pandas>=2.2
+plotly>=6.0
+python-calamine>=0.3
+pytest>=8

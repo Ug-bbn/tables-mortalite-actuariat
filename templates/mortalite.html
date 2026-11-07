@@ -1,132 +1,73 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphiques de la table de mortalité</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f7f7fa;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-            padding: 32px 24px 24px 24px;
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-        .desc {
-            text-align: center;
-            color: #555;
-            margin-bottom: 32px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 32px;
-        }
-        th, td {
-            padding: 12px 8px;
-            text-align: center;
-        }
-        th {
-            background: #2c3e50;
-            color: #fff;
-            font-weight: 600;
-        }
-        tr:nth-child(even) {
-            background: #f0f4f8;
-        }
-        tr:hover {
-            background: #e3eaf2;
-        }
-        .graph-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 1px 4px rgba(44,62,80,0.07);
-        }
-        .btn-home {
-            display: block;
-            margin: 0 auto;
-            padding: 10px 28px;
-            background: #2c3e50;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-        .btn-home:hover {
-            background: #1a232c;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 12px 2vw;
-            }
-            th, td {
-                padding: 8px 2px;
-                font-size: 0.95em;
-            }
-            .graph-container {
-                padding: 8px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Analyse de la table de mortalité</h1>
-        <div class="desc">
-            Visualisation des données de survie et d'espérance de vie par tranche d'âge.<br>
-            Pour un effectif initial de 100 000 naissances, les données étant sur 2 ans.
-        </div>
+{% extends "base.html" %}
+{% block titre %}Table de mortalité{% endblock %}
+{% macro fichier_cache() %}{% if nom %}<input type="hidden" name="contenu" value="{{ contenu_b64 }}"><input type="hidden" name="nom" value="{{ nom }}">{% endif %}{% endmacro %}
+{% macro sexe_select() %}
+<label>Sexe <select name="sexe">{% for s in sexes %}<option {% if s == sexe %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></label>
+{% endmacro %}
+{% block contenu %}
+<h1>Table de mortalité</h1>
+{% if nom %}<p class="bandeau">Fichier importé : <strong>{{ nom }}</strong></p>{% else %}
+<p class="desc">Table Insee 2020-2022 (moyenne sur trois années, France) : sur 100 000 naissances,
+nombre de survivants S(x) et espérance de vie E(x) à chaque âge.</p>{% endif %}
 
-        <h2 style="text-align:center; color:#2c3e50;">Nombre de survivants par tranche de 5 ans de 2020 à 2022</h2>
-        <div class="graph-container">
-            {{ survie_plot | safe }}
-        </div>
+<h2>Survivants selon l'âge</h2>
+{{ survie_html | safe }}
 
-        <h2 style="text-align:center; color:#2c3e50;">Espérance de vie selon l'âge de 2020 à 2022</h2>
-        <div class="graph-container">
-            {{ esperance_plot | safe }}
-        </div>
+<h2>Espérance de vie selon l'âge</h2>
+{{ esperance_html | safe }}
 
-        <h2 style="text-align:center; color:#2c3e50;">Table de mortalité de 2020 à 2022</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Âge</th>
-                    <th>Survivants</th>
-                    <th>Espérance de vie</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in table_data %}
-                <tr>
-                    <td>{{ row['Âge'] }}</td>
-                    <td>{{ "%.0f"|format(row['Survivants']) }}</td>
-                    <td>{{ "%.1f"|format(row['Espérance de vie']) }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <a href="/" class="btn-home">&#8592; Retour à l'accueil</a>
-    </div>
-</body>
-</html> 
+<h2>Probabilité de survie</h2>
+<div class="carte">
+    <form class="calcul" method="post">
+        {{ fichier_cache() }}{{ sexe_select() }}
+        <label>De l'âge <input type="number" name="age_depart" value="{{ age_depart }}" min="0" max="120"></label>
+        <label>à l'âge <input type="number" name="age_arrivee" value="{{ age_arrivee }}" min="0" max="120"></label>
+        <input type="hidden" name="age_rente" value="{{ age_rente }}"><input type="hidden" name="taux" value="{{ taux_pct }}"><input type="hidden" name="montant" value="{{ montant }}">
+        <button class="btn" type="submit">Calculer</button>
+    </form>
+    <p>Probabilité qu'une personne ({{ sexe | lower }}) de {{ age_depart }} ans atteigne {{ age_arrivee }} ans :</p>
+    <p class="resultat">{{ "%.1f" | format(proba * 100) | replace(".", ",") }} %</p>
+</div>
+
+<h2>Rente viagère</h2>
+<div class="carte">
+    <form class="calcul" method="post">
+        {{ fichier_cache() }}{{ sexe_select() }}
+        <label>Âge au départ <input type="number" name="age_rente" value="{{ age_rente }}" min="0" max="120"></label>
+        <label>Taux d'actualisation (%) <input type="number" name="taux" value="{{ taux_pct }}" min="0" max="10" step="0.1"></label>
+        <label>Rente annuelle (€) <input type="number" name="montant" value="{{ montant }}" min="0" step="100"></label>
+        <input type="hidden" name="age_depart" value="{{ age_depart }}"><input type="hidden" name="age_arrivee" value="{{ age_arrivee }}">
+        <button class="btn" type="submit">Calculer</button>
+    </form>
+    <p>Capital à constituer aujourd'hui pour verser {{ "{:,}".format(montant).replace(",", " ") }} € par an,
+       à vie, à partir de {{ age_rente }} ans ({{ sexe | lower }}, taux {{ taux_pct | string | replace(".", ",") }} %) :</p>
+    <p class="resultat">{{ "{:,.0f}".format(capital).replace(",", " ") }} €</p>
+    <p class="note">Soit {{ "%.2f" | format(rente) | replace(".", ",") }} années de rente : la valeur actuelle d'un euro versé
+       chaque année en début d'année, tant que la personne est en vie, actualisé au taux choisi.</p>
+</div>
+
+<h2>Table détaillée : {{ sexe | lower }}</h2>
+<form method="post">{{ fichier_cache() }}{{ sexe_select() }}
+    <input type="hidden" name="age_depart" value="{{ age_depart }}"><input type="hidden" name="age_arrivee" value="{{ age_arrivee }}">
+    <input type="hidden" name="age_rente" value="{{ age_rente }}"><input type="hidden" name="taux" value="{{ taux_pct }}"><input type="hidden" name="montant" value="{{ montant }}">
+    <button class="btn" type="submit">Afficher</button></form>
+<p class="note">L'espérance de vie est recalculée à partir des seuls survivants, puis comparée à la valeur publiée par l'Insee.
+   Écart maximal : {{ "%.2f" | format(ecart_max) | replace(".", ",") }} an. La table ne publie que certains âges (0, 1, 5, 10…) :
+   l'écart est plus grand quand l'intervalle est long et la mortalité forte (95 à 99 ans).</p>
+<table>
+    <thead><tr><th>Âge</th><th>Survivants</th><th>Proba. de décès avant l'âge suivant</th><th>E(x) Insee</th><th>E(x) recalculée</th><th>Écart</th></tr></thead>
+    <tbody>
+    {% for l in lignes %}
+    <tr>
+        <td>{{ l.age }}</td>
+        <td>{{ "{:,.0f}".format(l.survivants).replace(",", " ") }}</td>
+        <td>{% if l.quotient == l.quotient %}{{ "%.2f" | format(l.quotient * 100) | replace(".", ",") }} %{% else %}–{% endif %}</td>
+        <td>{{ "%.2f" | format(l.esperance) | replace(".", ",") }}</td>
+        <td>{{ "%.2f" | format(l.recalculee) | replace(".", ",") }}</td>
+        <td>{{ "%+.2f" | format(l.ecart) | replace(".", ",") }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<p class="note">Source : Insee, statistiques de l'état civil et estimations de population (données provisoires arrêtées fin 2023).</p>
+{% endblock %}
