@@ -4,7 +4,23 @@
 
 > 🇬🇧 *A Flask web app built on official French mortality tables (Insee): survival curves and life expectancy by sex, survival probabilities and life-annuity pricing. Every calculation is checked against the values Insee publishes.*
 
-Ce projet est parti d'un exercice d'entretien pour la Direction de la Sécurité sociale (DSS) : visualiser une table de mortalité et une pyramide des âges. Je l'ai ensuite retravaillé pour en faire un petit outil actuariel, testé et sécurisé.
+## Pourquoi ce projet
+
+J'ai écrit ce programme pour **comprendre ce qu'est une table de mortalité** : ce que signifient le nombre de survivants S(x) et l'espérance de vie E(x), et comment on passe de l'un à l'autre. Le point de départ était un entretien à la Direction de la Sécurité sociale (DSS). Le plus sûr moyen de comprendre ces notions était de les coder, puis de vérifier que mes calculs retombaient sur les chiffres de l'Insee.
+
+Je l'ai ensuite retravaillé pour en faire un petit outil actuariel, testé et sécurisé.
+
+| Survie et espérance de vie | Calculs actuariels | Pyramide des âges |
+|---|---|---|
+| ![Courbes de survie et d'espérance de vie par sexe](docs/survie-esperance.png) | ![Probabilité de survie et rente viagère](docs/calculs.png) | ![Répartition par tranche d'âge et pyramide](docs/pyramide.png) |
+
+## Les notions en bref
+
+- **S(x), les survivants :** sur 100 000 naissances, combien de personnes sont encore en vie à l'âge x. Exemple : S(65) = 88 716, donc 88,7 % des personnes atteignent 65 ans.
+- **E(x), l'espérance de vie à l'âge x :** le nombre moyen d'années qu'il reste à vivre à une personne qui a atteint l'âge x. On l'obtient en additionnant toutes les années vécues après x par les survivants, puis en divisant par S(x). E(0) correspond à l'espérance de vie à la naissance (82,1 ans), mais une personne de 65 ans peut encore espérer vivre 21 ans, et non 17 : elle a déjà « survécu » aux risques des âges précédents.
+- **q(x), la probabilité de décès :** la part des survivants à l'âge x qui décèdent avant l'âge suivant de la table.
+- **Probabilité de survie de x à y :** S(y) / S(x).
+- **Rente viagère :** la somme à placer aujourd'hui pour verser 1 € par an tant que la personne est en vie. Chaque versement futur est pondéré par la probabilité d'être encore en vie à ce moment-là, et actualisé, car 1 € dans 10 ans vaut moins que 1 € aujourd'hui. C'est le calcul de base des retraites et des contrats d'assurance vie.
 
 ## Ce que fait l'application
 

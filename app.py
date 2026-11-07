@@ -135,7 +135,7 @@ def demographie():
     tranches = act.synthese_tranches(p)
     barres = go.Figure(go.Bar(x=tranches["tranche"], y=tranches["effectif"] / 1000,
                               marker_color=["#7fc97f", "#f0b429", "#e8743b"],
-                              text=[f"{v:.1%}" for v in tranches["part"]], textposition="outside"))
+                              text=[f"{v * 100:.1f} %".replace(".", ",") for v in tranches["part"]], textposition="outside"))
 
     return render_template(
         "demographie.html", nom=nom,
