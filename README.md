@@ -2,7 +2,9 @@
 
 ![tests](https://github.com/Ug-bbn/tables-mortalite-actuariat/actions/workflows/tests.yml/badge.svg)
 
-> 🇬🇧 *A Flask web app built on official French mortality tables (Insee): survival curves and life expectancy by sex, survival probabilities and life-annuity pricing. Every calculation is checked against the values Insee publishes.*
+**▶ [Essayer l'application en ligne](https://tables-mortalite-actuariat.onrender.com)** *(hébergement gratuit : le premier chargement peut prendre une minute)*
+
+> 🇬🇧 *A Flask web app built on official French mortality tables (Insee): survival curves and life expectancy by sex, survival probabilities and life-annuity pricing. Every calculation is checked against the values Insee publishes. [Live demo](https://tables-mortalite-actuariat.onrender.com).*
 
 ## Pourquoi ce projet
 
